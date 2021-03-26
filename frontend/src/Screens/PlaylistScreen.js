@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Row, Col, Card, Button, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { getAllPlaylists, deletePlaylist } from '../actions/playlistActions';
+import { listSongs } from '../actions/songActions';
 
 const PlaylistScreen = ({ history }) => {
     const dispatch = useDispatch();
@@ -15,15 +16,25 @@ const PlaylistScreen = ({ history }) => {
     const playlists = useSelector((state) => state.playlists);
     const { loading, error, allPlaylists } = playlists;
 
+    const songList = useSelector((state) => state.songList);
+    const { error: errorSongs, songs } = songList;
+
     const playlistDelete = useSelector((state) => state.playlistDelete);
     const { error: errorDelete, success: successDelete } = playlistDelete;
+
+    // const [arrplaylists, setArrPlaylists] = useState([]);
 
     useEffect(() => {
         if (!userInfo) {
             history.push('/login?redirect=playlists');
         } else {
             dispatch(getAllPlaylists());
+            if (songs.length === 0 && !errorSongs) {
+                dispatch(listSongs());
+            }
+            console.log('Dispatch: Get All playlists', allPlaylists);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, history, userInfo, successDelete]);
 
     const handleDeletePlaylist = (delplaylist) => {

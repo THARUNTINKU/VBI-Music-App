@@ -33,11 +33,9 @@ const createPlaylist = asyncHandler(async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     const { playlistName, playlistSongs, createdBy } = req.body;
-    console.log('req.body: ', req.body);
 
     if (playlistSongs && playlistSongs.length === 0) {
         res.status(400);
-        console.log('No songs added in playlists');
         throw new Error('No songs added in playlists');
     }
 
@@ -55,6 +53,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updatePlaylist = asyncHandler(async (req, res) => {
+    console.log('save playlist', req.body);
     const { playlistName, playlistSongs: arrPlaylistSongs } = req.body;
 
     const playlist = await Playlist.findById({ _id: req.params.id });

@@ -17,10 +17,11 @@ import {
 export const playlistReducer = (state = { allPlaylists: [] }, action) => {
     switch (action.type) {
         case PLAYLIST_LIST_REQUEST:
-            return { loading: true, allPlaylists: [] };
+            return { loading: true };
         case PLAYLIST_LIST_SUCCESS:
             return {
                 loading: false,
+                success: true,
                 allPlaylists: action.payload.data,
             };
         case PLAYLIST_LIST_FAIL:
@@ -33,7 +34,7 @@ export const playlistReducer = (state = { allPlaylists: [] }, action) => {
 export const playlistDetailsReducer = (state = { playlist: {} }, action) => {
     switch (action.type) {
         case PLAYLIST_DETAILS_REQUEST:
-            return { ...state, loading: true };
+            return { ...state, loading: true, playlist: {} };
         case PLAYLIST_DETAILS_SUCCESS:
             return { loading: false, playlist: action.payload };
         case PLAYLIST_DETAILS_FAIL:

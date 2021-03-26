@@ -9,6 +9,7 @@ import {
     PLAYLIST_DETAILS_REQUEST,
     PLAYLIST_DETAILS_FAIL,
     PLAYLIST_DETAILS_SUCCESS,
+    PLAYLIST_DETAILS_RESET,
     PLAYLIST_DELETE_FAIL,
     PLAYLIST_DELETE_REQUEST,
     PLAYLIST_DELETE_SUCCESS,
@@ -20,6 +21,7 @@ import { logout } from './userActions';
 
 export const getAllPlaylists = () => async (dispatch, getState) => {
     try {
+        console.log('getAllplaylist dispatch actions');
         dispatch({ type: PLAYLIST_LIST_REQUEST });
 
         const {
@@ -123,10 +125,7 @@ export const createPlaylists = (newPlaylist) => async (dispatch, getState) => {
     }
 };
 
-export const updatePlaylists = (updatePlaylist) => async (
-    dispatch,
-    getState
-) => {
+export const updatePlaylists = (id, playlist) => async (dispatch, getState) => {
     try {
         dispatch({
             type: PLAYLIST_UPDATE_REQUEST,
@@ -143,9 +142,9 @@ export const updatePlaylists = (updatePlaylist) => async (
             },
         };
 
-        const { data } = await axios.post(
-            `/api/playlists/${updatePlaylists._id}`,
-            updatePlaylists,
+        const { data } = await axios.put(
+            `/api/playlists/${id}`,
+            playlist,
             config
         );
 

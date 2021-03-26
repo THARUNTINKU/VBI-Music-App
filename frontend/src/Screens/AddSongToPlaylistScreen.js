@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Button,
     ButtonGroup,
@@ -11,58 +11,57 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import SearchBox from '../components/SearchBox';
 import Song from '../components/Song';
-import { createPlaylists } from '../actions/playlistActions';
+import { getPlaylist, updatePlaylists } from '../actions/playlistActions';
 
-const NewPlaylistScreen = ({ history }) => {
+const AddSongToPlaylistScreen = ({ history, match }) => {
+    const playlistId = match.params.id;
+
     const dispatch = useDispatch();
 
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
+    const playlistDetails = useSelector((state) => state.playlistDetails);
+    const {
+        loading,
+        error,
+        playlist: { _id: id, playlistName, playlistSongs },
+    } = playlistDetails;
 
-    const songList = useSelector((state) => state.songList);
-    const { loading, error, songs } = songList;
-
-    const playlistCreate = useSelector((state) => state.playlistCreate);
-    const { loading: loadingCreate, error: errorCreate } = playlistCreate;
-
-    const [playlistName, setPlaylistName] = useState('');
-    const [addToPlaylist, setAddToPlaylist] = useState([]);
+    const [name, setName] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState('');
     const [filteredSong, setFilteredSong] = useState([]);
+    const [addToPlaylist, setAddToPlaylist] = useState([]);
 
-    const handleFilter = useCallback(() => {
-        console.log('new playlist screen: handleFIlter');
-        const filterS = songs.filter((song) =>
+    useEffect(() => {
+        if ((playlistId && !playlistSongs) || playlistId !== id) {
+            dispatch(getPlaylist(playlistId));
+        }
+        if (playlistSongs || searchQuery !== '') {
+            handleFilter();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, playlistId, playlistName, searchQuery, id]);
+
+    const handleFilter = () => {
+        const filterS = playlistSongs.filter((song) =>
             song.title.toLowerCase().includes(searchQuery)
         );
         setFilteredSong(filterS);
+        setName(playlistName);
 
         if (filterS.length === 0) setSearchResults(`No records`);
         else if (filterS.length === 1) setSearchResults(`Found 1 record`);
         else if (filterS.length > 1)
             setSearchResults(`Showing ${filterS.length} records`);
-    }, [searchQuery, songs]);
+    };
 
-    useEffect(() => {
-        setFilteredSong(songs);
-        if (searchQuery !== '') {
-            handleFilter();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, searchQuery, handleFilter]);
-
-    const savePlaylistAction = (e) => {
-        const newPlaylist = {
-            playlistName,
-            playlistSongs: addToPlaylist,
-            createdBy: userInfo._id,
+    const savePlaylistAction = () => {
+        const updatedPlaylist = {
+            playlistName: name,
+            playlistSongs: filteredSong,
         };
-        dispatch(createPlaylists(newPlaylist));
-        if (addToPlaylist.length !== 0) {
-            setAddToPlaylist([]);
-            history.push('/playlists');
-        }
+        console.log('updatedPlaylist: ', updatedPlaylist);
+        dispatch(updatePlaylists(updatedPlaylist));
+        history.push('/playlists');
     };
 
     const handleSearch = (query) => {
@@ -71,16 +70,26 @@ const NewPlaylistScreen = ({ history }) => {
 
     const handleAddPlaylists = (addSongToPlaylist) => {
         setAddToPlaylist([...addToPlaylist, addSongToPlaylist]);
-        const newFilter = filteredSong.filter(
-            (song) => song._id !== addSongToPlaylist._id
-        );
+        const newFilter = filteredSong.filter((song) => song._id !== id);
         setFilteredSong(newFilter);
+    };
+
+    const shuffleArray = (songs) => {
+        if (songs.length > 1) {
+            for (var i = songs.length - 1; i > 0; i--) {
+                // Generate random number
+                var j = Math.floor(Math.random() * (i + 1));
+
+                var temp = songs[i];
+                songs[i] = songs[j];
+                songs[j] = temp;
+            }
+            setFilteredSong([...songs]);
+        }
     };
 
     return (
         <Container>
-            {loadingCreate && <Loader />}
-            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
             <div className='row no-gutters mb-3'>
                 <div className='col-sm-10 px-3'>
                     <h3>
@@ -93,26 +102,33 @@ const NewPlaylistScreen = ({ history }) => {
                             <FormControl
                                 type='text'
                                 className='form-control'
-                                name='playlistName'
-                                id='playlistName'
+                                name='name'
+                                id='name'
                                 placeholder='Enter your playlist name'
                                 autoFocus=''
-                                value={playlistName}
-                                onChange={(e) =>
-                                    setPlaylistName(e.target.value)
-                                }
-                                required
+                                onChange={(e) => setName(e.target.value)}
+                                autoComplete='off'
+                                value={name}
                             />
                         </InputGroup>
                     </h3>
                 </div>
-                <div className='col-sm-2'>
-                    <ButtonGroup aria-label='list type' className='d-flex'>
+                <div className='col-sm-8'>
+                    <ButtonGroup aria-label='list type' className='d-flex px-3'>
                         <Button
-                            variant='primary'
-                            onClick={savePlaylistAction}
-                            disabled={playlistName.length >= 5 ? false : true}>
-                            Save playlist
+                            variant='warning'
+                            onClick={() => shuffleArray(filteredSong)}>
+                            <i className='fas fa-random'></i> Shuffle playlist
+                        </Button>
+                        <Button href={`/playlists/:id/edit`} variant='info'>
+                            <i className='fas fa-plus'></i> Add song
+                        </Button>
+                        <Button variant='primary' onClick={savePlaylistAction}>
+                            <i className='fas fa-save'></i> Save playlist
+                        </Button>
+                        <Button href={'/playlists'} variant='dark'>
+                            <i className='fas fa-long-arrow-alt-left'></i> Go
+                            Back
                         </Button>
                     </ButtonGroup>
                 </div>
@@ -144,7 +160,7 @@ const NewPlaylistScreen = ({ history }) => {
                                 showDelete={false}
                                 showAddSong={true}
                                 handleAddPlaylists={() =>
-                                    handleAddPlaylists(song)
+                                    handleAddPlaylists(song._id)
                                 }
                             />
                         ))
@@ -157,4 +173,4 @@ const NewPlaylistScreen = ({ history }) => {
     );
 };
 
-export default NewPlaylistScreen;
+export default AddSongToPlaylistScreen;

@@ -4,10 +4,10 @@ import {
     SONG_LIST_FAIL,
 } from '../constants/songConstants';
 
-export const songListReducer = (state = { songs: [] }, action) => {
+export const songListReducer = (state = {}, action) => {
     switch (action.type) {
         case SONG_LIST_REQUEST:
-            return { loading: true, songs: [] };
+            return { loading: true };
         case SONG_LIST_SUCCESS:
             return {
                 loading: false,

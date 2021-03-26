@@ -25,7 +25,10 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
     : null;
 
 const initialState = {
+    songList: { songs: [] },
     userLogin: { userInfo: userInfoFromStorage },
+    playlists: { allPlaylists: [] },
+    // playlistDetails: { playlist: { _id: null } },
 };
 
 const middleware = [thunk];

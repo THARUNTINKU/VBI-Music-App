@@ -11,16 +11,14 @@ const SongScreen = () => {
     const dispatch = useDispatch();
 
     const songList = useSelector((state) => state.songList);
-    const { loading, error, songs } = songList;
+    const { loading, error, songs = [] } = songList;
 
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredSong, setFilteredSong] = useState([]);
     const [searchResults, setSearchResults] = useState('');
 
     useEffect(() => {
-        console.log(songs);
-        if (songs.length === 0) {
-            console.log('Dispatch songs');
+        if (songs.length === 0 && !error) {
             dispatch(listSongs());
         }
         if (songs.length > 0 || searchQuery !== '') {
