@@ -1,27 +1,13 @@
 import React from 'react';
 import { Row, Col, Image, Button, ButtonGroup, Card } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
 
-const Song = ({ song, showDelete, showAddSong, isEditPlaylist }) => {
-    // const { song, showDelete, showAddSong, isEditPlaylist } = this.props;
-
-    const dispatch = useDispatch();
-
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
-
-    const removeSongFromPlaylist = (song) => {
-        console.log(song);
-    };
-
-    const addSongToPlaylist = (song) => {
-        console.log(song);
-    };
-
-    const addSongToEditPlaylist = (song) => {
-        console.log(song);
-    };
-
+const Song = ({
+    song,
+    showDelete,
+    showAddSong,
+    handleAddPlaylists,
+    removeSongFromPlaylist,
+}) => {
     return (
         <Card className='mb-4'>
             <div style={{ backgroundColor: 'white' }}>
@@ -54,9 +40,7 @@ const Song = ({ song, showDelete, showAddSong, isEditPlaylist }) => {
                                     <ButtonGroup aria-label='list type'>
                                         <Button
                                             variant='danger'
-                                            onClick={() =>
-                                                removeSongFromPlaylist(song)
-                                            }>
+                                            onClick={removeSongFromPlaylist}>
                                             <i className='fas fa-minus-circle'></i>{' '}
                                             Remove
                                         </Button>
@@ -64,25 +48,12 @@ const Song = ({ song, showDelete, showAddSong, isEditPlaylist }) => {
                                 ) : null}
                                 {showAddSong ? (
                                     <ButtonGroup aria-label='list type'>
-                                        {isEditPlaylist ? (
-                                            <Button
-                                                variant='dark'
-                                                onClick={() =>
-                                                    addSongToEditPlaylist(song)
-                                                }>
-                                                <i className='fas fa-plus'></i>{' '}
-                                                Add to list
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                variant='dark'
-                                                onClick={() =>
-                                                    addSongToPlaylist(song)
-                                                }>
-                                                <i className='fas fa-plus'></i>{' '}
-                                                Add to list
-                                            </Button>
-                                        )}
+                                        <Button
+                                            variant='dark'
+                                            onClick={handleAddPlaylists}>
+                                            <i className='fas fa-plus'></i> Add
+                                            to list
+                                        </Button>
                                     </ButtonGroup>
                                 ) : null}
                             </Col>

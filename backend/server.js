@@ -8,7 +8,7 @@ const connectDB = require('./config/db');
 
 const songRoutes = require('./routes/songRoutes');
 const playlistRoutes = require('./routes/playlistRoutes');
-// const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes');
 // const uploadRoutes = require('./routes/uploadRoutes');
 
 dotenv.config();
@@ -27,7 +27,7 @@ app.use(express.json()); // For accepting json data, POST
 // Route Middlewares
 app.use('/api/songs', songRoutes);
 app.use('/api/playlists', playlistRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 // app.use('/api/upload', uploadRoutes);
 
 // Preparation for production deployment

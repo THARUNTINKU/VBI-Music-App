@@ -28,6 +28,10 @@ const songSchema = new mongoose.Schema(
             maxlength: 255,
             trim: true,
         },
+        image: {
+            type: String,
+            required: true,
+        },
     },
     {
         timestamps: true,
@@ -42,6 +46,7 @@ function validateSong(song) {
         album: Joi.string().min(5).max(255),
         singer: Joi.string().min(5).max(255),
         duration: Joi.string().max(255),
+        image: Joi.string().max(255),
     };
     return Joi.validate(song, schema);
 }

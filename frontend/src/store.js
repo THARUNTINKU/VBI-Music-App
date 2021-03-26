@@ -2,15 +2,22 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { songListReducer } from './reducers/songReducers';
-import { userLoginReducer } from './reducers/userReducers';
-// import { flagReducers } from './reducers/flagReducers';
-// import { playlistsReducers } from './reducers/playlistReducers';
+import { userLoginReducer, userRegisterReducer } from './reducers/userReducers';
+import {
+    playlistReducer,
+    playlistsCreateReducer,
+    playlistsDeleteReducer,
+    playlistDetailsReducer,
+} from './reducers/playlistReducers';
 
 const reducer = combineReducers({
     songList: songListReducer,
     userLogin: userLoginReducer,
-    // flags: flagsReducer,
-    // playlists: playlistsReducer,
+    userRegister: userRegisterReducer,
+    playlists: playlistReducer,
+    playlistCreate: playlistsCreateReducer,
+    playlistDetails: playlistDetailsReducer,
+    playlistDelete: playlistsDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -19,12 +26,6 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
 
 const initialState = {
     userLogin: { userInfo: userInfoFromStorage },
-    flags: {
-        showDelete: false,
-        showAddSong: false,
-        isEditPlaylist: false,
-    },
-    playlists: [],
 };
 
 const middleware = [thunk];

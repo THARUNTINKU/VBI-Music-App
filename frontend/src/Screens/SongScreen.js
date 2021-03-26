@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchBox from '../components/SearchBox';
@@ -13,13 +13,45 @@ const SongScreen = () => {
     const songList = useSelector((state) => state.songList);
     const { loading, error, songs } = songList;
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredSong, setFilteredSong] = useState([]);
+    const [searchResults, setSearchResults] = useState('');
+
     useEffect(() => {
-        dispatch(listSongs());
-    }, [dispatch]);
+        console.log(songs);
+        if (songs.length === 0) {
+            console.log('Dispatch songs');
+            dispatch(listSongs());
+        }
+        if (songs.length > 0 || searchQuery !== '') {
+            const filterS = songs.filter((song) =>
+                song.title.toLowerCase().includes(searchQuery)
+            );
+            setFilteredSong(filterS);
+            if (filterS.length === 0) setSearchResults(`No records`);
+            else if (filterS.length === 1) setSearchResults(`Found 1 record`);
+            else if (filterS.length > 1)
+                setSearchResults(`Showing ${filterS.length} records`);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, searchQuery, loading]);
+
+    const handleSearch = (query) => {
+        console.log('handleSearch: ', query);
+        setSearchQuery(query);
+    };
 
     return (
         <div>
-            <SearchBox />
+            <SearchBox
+                searchBoxText={searchQuery}
+                searchBoxChange={handleSearch}
+            />
+            {searchQuery ? (
+                <div style={{ float: 'right', paddingBottom: '1%' }}>
+                    {searchResults}
+                </div>
+            ) : null}
             <h2>Latest songs</h2>
             {loading ? (
                 <Loader />
@@ -27,7 +59,7 @@ const SongScreen = () => {
                 <Message variant='danger'>{error}</Message>
             ) : (
                 <Container className='py-3'>
-                    {songs.map((song, index) => (
+                    {filteredSong.map((song, index) => (
                         <Song
                             key={index}
                             song={song}

@@ -2,9 +2,7 @@ import React from 'react';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 
-const SearchBox = () => {
-    // const { searchBoxChange, searchBoxText } = this.props;
-
+const SearchBox = ({ searchBoxChange, searchBoxText }) => {
     return (
         <div style={{ width: '100%' }}>
             <InputGroup className='mb-3'>
@@ -15,10 +13,10 @@ const SearchBox = () => {
                     placeholder='Search by song title...'
                     id='searchBox'
                     autoFocus=''
-                    // onChange={searchBoxChange}
+                    onChange={(e) => searchBoxChange(e.target.value)}
                     required
                     autoComplete='off'
-                    // value={searchBoxText}
+                    value={searchBoxText}
                 />
                 {/* <div className='search-icon'>
                     <i className='fas fa-search mr-1' />

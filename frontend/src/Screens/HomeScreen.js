@@ -1,11 +1,12 @@
 import React from 'react';
-// import { Container } from 'react-bootstrap';
+import FormContainer from '../components/FormContainer';
 
 const HomeScreen = () => {
     return (
-        <React.Fragment>
-            <div className='py-3 center'>Welcome to VBI Music App</div>
-        </React.Fragment>
+        <FormContainer>
+            {/* <div className='py-3 center'>Welcome to VBI Music App</div> */}
+            <h2>Welcome to VBI Music App</h2>
+        </FormContainer>
     );
 };
 

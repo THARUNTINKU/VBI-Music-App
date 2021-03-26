@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel.js');
+const User = require('../models/user.model');
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
@@ -35,7 +35,9 @@ const admin = (req, res, next) => {
         next();
     } else {
         res.status(401);
-        throw new Error('Not authorized as an admin');
+        throw new Error(
+            'Not authorized. Please login with administrator privileges to perform this action.'
+        );
     }
 };
 
