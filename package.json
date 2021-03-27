@@ -1,5 +1,5 @@
 {
-  "name": "vbi-music",
+  "name": "vbi-music-app",
   "version": "1.0.0",
   "description": "A simple music platform",
   "main": "server.js",
